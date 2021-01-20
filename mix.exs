@@ -1,4 +1,4 @@
-defmodule BeamNotify.MixProject do
+defmodule BEAMNotify.MixProject do
   use Mix.Project
 
   @version "0.1.0"

@@ -27,7 +27,7 @@ call, and other things.
 
 To send a message from a shell script to your `BEAMNotify` GenServer, you'll
 need two environment variables. These can be gotten by calling
-`BeamNotify.env/1` with the name that you gave it.
+`BEAMNotify.env/1` with the name that you gave it.
 
 1. `$BEAM_NOTIFY` - the absolute path to the `beam_notify` executable
 2. `$BEAM_NOTIFY_OPTIONS` - how `beam_notify` should find the appropriate BEAM

@@ -65,7 +65,7 @@ defmodule BEAMNotify do
 
   3. If you only have the name that was passed to `start_link/1`, then call
      it with the name. The name alone is insufficient for returning the
-     `$BEAM_NOTIFY_OPTIONS` environment variable, so the `BeamNotify`
+     `$BEAM_NOTIFY_OPTIONS` environment variable, so the `BEAMNotify`
      GenServer must be running. If you're in a chicken-and-egg situation
      where you're setting up a supervision tree, but it hasn't been started
      yet, see option 1.
