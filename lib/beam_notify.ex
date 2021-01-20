@@ -52,10 +52,29 @@ defmodule BEAMNotify do
   Return the OS environment needed to call `$BEAM_NOTIFY`
 
   This returns a map that can be passed directly to `System.cmd/3` via its
-  `:env` option. Call it with either the `BEAMNotify` GenServer's pid or the
-  name that was used to start the Genserver.
+  `:env` option.
+
+  This function can be passed different things based on what's convenient.
+
+  1. If you're setting up `child_spec`'s for a supervision tree and need the
+     environment to pass in another `child_spec`, call this with the same
+     options that you'd pass to `start_link/1`. This is a very common use.
+
+  2. If you called `start_link/1` manually and have the pid, call it with
+     the pid.
+
+  3. If you only have the name that was passed to `start_link/1`, then call
+     it with the name. The name alone is insufficient for returning the
+     `$BEAM_NOTIFY_OPTIONS` environment variable, so the `BeamNotify`
+     GenServer must be running. If you're in a chicken-and-egg situation
+     where you're setting up a supervision tree, but it hasn't been started
+     yet, see option 1.
   """
-  @spec env(pid() | binary() | atom()) :: Enumerable.t()
+  @spec env(pid() | binary() | atom() | keyword()) :: Enumerable.t()
+  def env(options) when is_list(options) do
+    options_to_env(options)
+  end
+
   def env(pid) when is_pid(pid) do
     GenServer.call(pid, :env)
   end
@@ -66,8 +85,7 @@ defmodule BEAMNotify do
 
   @impl GenServer
   def init(options) do
-    socket_path = Path.join(System.tmp_dir!(), "beam_notify-#{options[:name]}")
-    bin_path = Application.app_dir(:beam_notify, ["priv", "beam_notify"])
+    socket_path = socket_path(options)
     dispatcher = Keyword.get(options, :dispatcher, &null_dispatcher/2)
     recbuf = Keyword.get(options, :recbuf, 8192)
 
@@ -87,7 +105,7 @@ defmodule BEAMNotify do
     state = %{
       socket_path: socket_path,
       socket: socket,
-      bin_path: bin_path,
+      options: options,
       dispatcher: dispatcher
     }
 
@@ -96,8 +114,7 @@ defmodule BEAMNotify do
 
   @impl GenServer
   def handle_call(:env, _from, state) do
-    env = %{"BEAM_NOTIFY" => state.bin_path, "BEAM_NOTIFY_OPTIONS" => state.socket_path}
-    {:reply, env, state}
+    {:reply, options_to_env(state.options), state}
   end
 
   @impl GenServer
@@ -117,5 +134,17 @@ defmodule BEAMNotify do
 
   defp null_dispatcher(args, env) do
     Logger.warn("beam_notify called with no dispatcher: #{inspect(args)}, #{inspect(env)}")
+  end
+
+  defp options_to_env(options) do
+    %{"BEAM_NOTIFY" => bin_path(), "BEAM_NOTIFY_OPTIONS" => socket_path(options)}
+  end
+
+  defp socket_path(options) do
+    Path.join(System.tmp_dir!(), "beam_notify-#{options[:name]}")
+  end
+
+  defp bin_path() do
+    Application.app_dir(:beam_notify, ["priv", "beam_notify"])
   end
 end
