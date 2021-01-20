@@ -32,4 +32,11 @@ defmodule BEAMNotifyTest do
 
     assert_receive {[], %{"TEST_ENV_VAR" => "42"}}
   end
+
+  test "bin_path/0 location matches environment" do
+    env = BEAMNotify.env(name: "test_name")
+    bin_path = BEAMNotify.bin_path()
+
+    assert bin_path == env["BEAM_NOTIFY"]
+  end
 end

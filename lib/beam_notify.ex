@@ -83,6 +83,14 @@ defmodule BEAMNotify do
     GenServer.call(gen_server_name(name), :env)
   end
 
+  @doc """
+  Return the path to `beam_notify`
+  """
+  @spec bin_path() :: Path.t()
+  def bin_path() do
+    Application.app_dir(:beam_notify, ["priv", "beam_notify"])
+  end
+
   @impl GenServer
   def init(options) do
     socket_path = socket_path(options)
@@ -142,9 +150,5 @@ defmodule BEAMNotify do
 
   defp socket_path(options) do
     Path.join(System.tmp_dir!(), "beam_notify-#{options[:name]}")
-  end
-
-  defp bin_path() do
-    Application.app_dir(:beam_notify, ["priv", "beam_notify"])
   end
 end
