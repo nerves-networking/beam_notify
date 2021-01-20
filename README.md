@@ -95,6 +95,43 @@ iex> flush
 {["Hello", "world"], %{...}}
 ```
 
+## Supervision example
+
+Here's a code snippet of starting a hypothetical non-Elixir program that needs
+to send messages back to Elixir. This code is part of a [module-based
+supervisor](https://hexdocs.pm/elixir/Supervisor.html#module-module-based-supervisors),
+but this isn't necessary. Two GenServers are started: one for `BEAMNotify` and
+one to start and monitor the non-Elixir program using
+[`MuonTrap.Daemon`](https://hexdocs.pm/muontrap/MuonTrap.Daemon.html).
+
+Note how `BEAMNotify.env/1` is used to pass the proper environment to the
+program.
+
+```elixir
+  @impl Supervisor
+  def init(_) do
+    beam_notify_options = [name: "my_beam", dispatcher: &Some.function/2]
+    children = [
+      {BEAMNotify, beam_notify_options},
+      {MuonTrap.Daemon,
+       [
+         "/path/to/program",
+         ["-s", "script_calling_beam_notify.sh"],
+         [log_output: :debug, env: BEAMNotify.env(beam_notify_options)]
+       ]}
+    ]
+
+    opts = [strategy: :one_for_one]
+    Supervisor.start_link(children, opts)
+  end
+```
+
+If you're lucky, it might be sufficient to call `BEAMNotify.bin_path/0` to get
+the path to the `beam_notify` program and pass that directly to the non-Elixir
+program. You'll still need to set the environment for `beam_notify` to work. On
+the bright side, this will skip out having your system start `bash` on each
+notification.
+
 ## License
 
 This library is covered by the Apache 2 license.
