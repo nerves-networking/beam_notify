@@ -36,16 +36,8 @@ defmodule BEAMNotify do
   """
   @spec start_link(options()) :: GenServer.on_start()
   def start_link(options) do
-    name = gen_server_name(options[:name])
+    name = options |> name_from_options() |> gen_server_name()
     GenServer.start_link(__MODULE__, options, name: name)
-  end
-
-  defp gen_server_name(nil) do
-    gen_server_name(:global)
-  end
-
-  defp gen_server_name(name) do
-    Module.concat(__MODULE__, name)
   end
 
   @doc """
@@ -140,6 +132,14 @@ defmodule BEAMNotify do
     _ = File.rm(state.socket_path)
   end
 
+  defp gen_server_name(name) do
+    Module.concat(__MODULE__, name)
+  end
+
+  defp name_from_options(options) do
+    Keyword.get(options, :name, :unnamed)
+  end
+
   defp null_dispatcher(args, env) do
     Logger.warn("beam_notify called with no dispatcher: #{inspect(args)}, #{inspect(env)}")
   end
@@ -149,6 +149,7 @@ defmodule BEAMNotify do
   end
 
   defp socket_path(options) do
-    Path.join(System.tmp_dir!(), "beam_notify-#{options[:name]}")
+    name = "beam_notify-" <> to_string(name_from_options(options))
+    Path.join(System.tmp_dir!(), name)
   end
 end

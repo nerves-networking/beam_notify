@@ -15,6 +15,16 @@ defmodule BEAMNotifyTest do
     assert_receive {["hello", "from", "a", "c", "program"], %{}}
   end
 
+  test "nameless use" do
+    us = self()
+    pid = start_supervised!({BEAMNotify, dispatcher: &send(us, {&1, &2})})
+
+    env = BEAMNotify.env(pid)
+    {"", 0} = System.cmd(env["BEAM_NOTIFY"], ["hello", "nameless"], env: env)
+
+    assert_receive {["hello", "nameless"], %{}}
+  end
+
   test "sending a message via a script", context do
     pid = start_supervised!(beam_notify_child_spec(context))
 
