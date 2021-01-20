@@ -42,7 +42,6 @@ defmodule BEAMNotify.MixProject do
     %{
       files: [
         "lib",
-        "test",
         "mix.exs",
         "Makefile",
         "README.md",
