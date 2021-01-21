@@ -179,7 +179,8 @@ defmodule BEAMNotify do
   defp socket_path(options) do
     case Keyword.get(options, :path) do
       nil ->
-        name = "beam_notify-" <> to_string(name_from_options(options))
+        safe_name = name_from_options(options) |> :erlang.phash2() |> Integer.to_string()
+        name = "beam_notify-" <> safe_name
         Path.join(System.tmp_dir!(), name)
 
       path ->
