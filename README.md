@@ -65,7 +65,7 @@ creating a test Elixir project (`mix new ...`) and adding it to the `mix.exs`:
 ```elixir
 def deps do
   [
-    {:beam_notify, "~> 0.1.0"}
+    {:beam_notify, "~> 0.2.0"}
   ]
 end
 ```
