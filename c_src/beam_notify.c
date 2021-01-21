@@ -13,6 +13,11 @@
 
 extern char **environ;
 
+struct beam_notify_options {
+    char *path;
+    int encode_environment;
+};
+
 static void encode_string(ei_x_buff *buff, const char *str)
 {
     // Encode strings as binaries so that we get Elixir strings
@@ -21,22 +26,23 @@ static void encode_string(ei_x_buff *buff, const char *str)
     ei_x_encode_binary(buff, str, strlen(str));
 }
 
-static int should_encode(const char *kv)
+static int should_encode(const char *kv, const struct beam_notify_options *bn)
 {
-    if (strncmp(kv, "BEAM_NOTIFY=", 12) == 0 ||
+    if (!bn->encode_environment ||
+        strncmp(kv, "BEAM_NOTIFY=", 12) == 0 ||
         strncmp(kv, "BEAM_NOTIFY_OPTIONS=", 20) == 0)
         return 0;
     else
         return 1;
 }
 
-static int count_environ_to_encode()
+static int count_environ_to_encode(const struct beam_notify_options *bn)
 {
     char **p = environ;
     int n = 0;
 
     while (*p != NULL) {
-        if (should_encode(*p))
+        if (should_encode(*p, bn))
             n++;
 
         p++;
@@ -65,17 +71,19 @@ static void encode_env_kv(ei_x_buff *buff, const char *kv)
     encode_string(buff, value);
 }
 
-static void encode_environ(ei_x_buff *buff)
+static void encode_environ(ei_x_buff *buff, const struct beam_notify_options *bn)
 {
-    int kv_to_encode = count_environ_to_encode();
+    int kv_to_encode = count_environ_to_encode(bn);
     ei_x_encode_map_header(buff, kv_to_encode);
 
     char **p = environ;
-    while (*p != NULL) {
+    while (*p != NULL && kv_to_encode > 0) {
         const char *kv = *p;
 
-        if (should_encode(kv))
+        if (should_encode(kv, bn)) {
             encode_env_kv(buff, kv);
+            kv_to_encode--;
+        }
 
         p++;
     }
@@ -149,16 +157,15 @@ static int inplace_string_to_argv(char *str, char **argv, int max_args)
     return argc;
 }
 
-struct beam_notify_options {
-    char *path;
-};
-
 static int parse_arguments(int argc, char *argv[], struct beam_notify_options *bn)
 {
     int opt;
 
-    while ((opt = getopt(argc, argv, "p:")) != -1) {
+    while ((opt = getopt(argc, argv, "ep:")) != -1) {
         switch (opt) {
+        case 'e':
+            bn->encode_environment = 1;
+            break;
         case 'p':
             bn->path = optarg;
             break;
@@ -229,11 +236,10 @@ int main(int argc, char *argv[])
     if (ei_x_new_with_version(&buff) < 0)
         err(EXIT_FAILURE, "ei_x_new_with_version");
 
-
     ei_x_encode_tuple_header(&buff, 2);
 
     encode_args(&buff, argc, argv);
-    encode_environ(&buff);
+    encode_environ(&buff, &bn);
 
     ssize_t rc = write(fd, buff.buff, buff.index);
     if (rc < 0)

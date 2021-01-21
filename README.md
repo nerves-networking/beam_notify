@@ -27,7 +27,7 @@ call, and other things.
 
 The shell script (or any program) needs to call the `beam_notify` program
 supplied by this library. The message is passed via commandline arguments or
-environment variables.
+environment variables (see `:report_env` option).
 
 Since `beam_notify` needs to know how to connect to the appropriate
 `BEAMNotify` GenServer (there may be more than one), the shell script must pass
@@ -87,9 +87,9 @@ Start up Elixir with `iex -S mix`:
 iex> us = self()
 #PID<0.204.0>
 
-# Start a BEAMNotify GenServer. The dispatcher function just sends a tuple
-# with the arguments and environment passed in from the shell script.
-iex> BEAMNotify.start_link(name: "sulu", dispatcher: &send(us, {&1, &2}))
+# Start a BEAMNotify GenServer. The dispatcher function sends a tuple with the
+# arguments and environment passed in from the shell script.
+iex> BEAMNotify.start_link(name: "sulu", report_env: true, dispatcher: &send(us, {&1, &2}))
 {:ok, #PID<0.211.0>}
 
 # Run the shell script. We're doing this from Elixir, but you

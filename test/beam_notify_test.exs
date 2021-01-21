@@ -1,9 +1,10 @@
 defmodule BEAMNotifyTest do
   use ExUnit.Case
 
-  defp beam_notify_child_spec(context) do
+  defp beam_notify_child_spec(context, extra_options \\ []) do
     us = self()
-    {BEAMNotify, name: context.test, dispatcher: &send(us, {&1, &2})}
+    base_options = [name: context.test, dispatcher: &send(us, {&1, &2})]
+    {BEAMNotify, Keyword.merge(base_options, extra_options)}
   end
 
   test "directly sending a message", context do
@@ -12,7 +13,8 @@ defmodule BEAMNotifyTest do
     env = BEAMNotify.env(pid)
     {"", 0} = System.cmd(env["BEAM_NOTIFY"], ["hello", "from", "a", "c", "program"], env: env)
 
-    assert_receive {["hello", "from", "a", "c", "program"], %{}}
+    empty_map = %{}
+    assert_receive {["hello", "from", "a", "c", "program"], ^empty_map}
   end
 
   test "nameless use" do
@@ -45,7 +47,7 @@ defmodule BEAMNotifyTest do
   end
 
   test "capturing environment variables", context do
-    pid = start_supervised!(beam_notify_child_spec(context))
+    pid = start_supervised!(beam_notify_child_spec(context, report_env: true))
 
     {"This is set_env.sh\n", 0} =
       System.cmd("/bin/sh", ["test/support/set_env.sh"], env: BEAMNotify.env(pid))

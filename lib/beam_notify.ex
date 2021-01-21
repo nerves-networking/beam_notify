@@ -4,8 +4,6 @@ defmodule BEAMNotify do
 
   @moduledoc """
   Send a message to the BEAM from a shell script
-
-
   """
 
   @typedoc """
@@ -26,12 +24,19 @@ defmodule BEAMNotify do
   * `:dispatcher` - a function to call when a notification comes in
   * `:path` - the path to use for the named socket. A path in the system
      temporary directory is the default.
-  * `:environment` - TBD
+  * `:report_env` - set to `true` to report environment variables in addition
+     to commandline argument. Defaults to `false`
   * `:recbuf` - receive buffer size. If you're sending a particular large
      amount of data and getting errors from `:erlang.binary_to_term(data)`, try
      making this bigger. Defaults to 8192.
   """
-  @type options() :: [name: binary() | atom(), path: Path.t(), dispatcher: dispatcher()]
+  @type options() :: [
+          name: binary() | atom(),
+          path: Path.t(),
+          dispatcher: dispatcher(),
+          report_env: boolean(),
+          recbuf: non_neg_integer()
+        ]
 
   @doc """
   Start the BEAMNotify message receiver
@@ -152,7 +157,15 @@ defmodule BEAMNotify do
   end
 
   defp options_to_cmdline(options) do
-    ["-p", socket_path(options)]
+    ["-p", socket_path(options)] ++ report_env_arg(options)
+  end
+
+  defp report_env_arg(options) do
+    if Keyword.get(options, :report_env) do
+      ["-e"]
+    else
+      []
+    end
   end
 
   defp quote_string(s) do
