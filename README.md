@@ -25,21 +25,29 @@ and communicate over distributed Erlang.
 Options to `BEAMNotify` specify things like its name, a dispatch function to
 call, and other things.
 
-To send a message from a shell script to your `BEAMNotify` GenServer, you'll
-need two environment variables. These can be gotten by calling
-`BEAMNotify.env/1` with the name that you gave it.
+The shell script (or any program) needs to call the `beam_notify` program
+supplied by this library. The message is passed via commandline arguments or
+environment variables.
+
+Since `beam_notify` needs to know how to connect to the appropriate
+`BEAMNotify` GenServer (there may be more than one), the shell script must pass
+some options. To make this easy, `BEAMNotify` provides two environment
+variables by calling `BEAMNotify.env/1`:
 
 1. `$BEAM_NOTIFY` - the absolute path to the `beam_notify` executable
-2. `$BEAM_NOTIFY_OPTIONS` - how `beam_notify` should find the appropriate BEAM
-   instance and process the notification
+2. `$BEAM_NOTIFY_OPTIONS` - how `beam_notify` should connect
 
 In the shell script, run `$BEAM_NOTIFY` and pass it any arguments that you want
-sent up. `BEAMNotify` reports environment variables too.
+send up. `BEAMNotify` reports environment variables too.
+
+If it is not possible to pass the `$BEAM_NOTIFY*` environment variables through
+to your script due to a restricted shell environment, see the restricted shell
+section below.
 
 Back in Elixir, whenever a proper message is received, `BEAMNotify` will call
 the dispatch function. The dispatch function is responsible for forwarding on
-messages however makes sense in your application. If handling is simple, you
-can process them in the dispatch function. You could also publish them through
+messages however makes sense in your application. If handling is simple, you can
+process them in the dispatch function. You could also publish them through
 `Phoenix.PubSub` or another pubsub service. `BEAMNotify` only handles strings,
 so if you want to be fancier with your messages or filter them, you'll have to
 add that to your dispatcher function.
@@ -131,6 +139,38 @@ the path to the `beam_notify` program and pass that directly to the non-Elixir
 program. You'll still need to set the environment for `beam_notify` to work. On
 the bright side, this will skip out having your system start `bash` on each
 notification.
+
+## Restricted shell environments
+
+Some programs clear the OS environment before running programs as a security
+precaution. It's still possible send messages to Elixir.
+
+You'll need to know the path to the `beam_notify` binary and have a place to put
+the communications socket that both Elixir and the `beam_notify` binary can
+open. In this example, the socket will be created as
+`/tmp/my_beam_notify_socket`. In Elixir, the `BEAMNotify` child_spec might look
+like this:
+
+```elixir
+{BEAMNotify, name: "any name", path: "/tmp/my_beam_notify_socket", dispatcher: &Some.function/2}
+```
+
+For the script, here's a sample for Nerves devices where code is installed under
+`/srv/erlang`.
+
+```sh
+#!/bin/sh
+
+BEAM_NOTIFY=$(ls /srv/erlang/lib/beam_notify-*/priv/beam_notify)
+
+$BEAM_NOTIFY -p /tmp/my_beam_notify_socket -- hello
+```
+
+The arguments following the `--` are passed. The `-p /tmp/my_beam_notify_socket`
+part will be dropped.
+
+Arguments are only parsed (and dropped) if `$BEAM_NOTIFY_OPTIONS` isn't defined.
+In other words, `$BEAM_NOTIFY_OPTIONS` takes precedence.
 
 ## License
 

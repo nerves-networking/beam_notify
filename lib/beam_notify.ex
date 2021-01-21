@@ -24,12 +24,14 @@ defmodule BEAMNotify do
   * `:name` - a unique name for this notifier. This is required if you expect
     to run multiple BEAMNotify GenServers at a time.
   * `:dispatcher` - a function to call when a notification comes in
+  * `:path` - the path to use for the named socket. A path in the system
+     temporary directory is the default.
   * `:environment` - TBD
   * `:recbuf` - receive buffer size. If you're sending a particular large
      amount of data and getting errors from `:erlang.binary_to_term(data)`, try
      making this bigger. Defaults to 8192.
   """
-  @type options() :: [name: binary() | atom(), dispatcher: dispatcher()]
+  @type options() :: [name: binary() | atom(), path: Path.t(), dispatcher: dispatcher()]
 
   @doc """
   Start the BEAMNotify message receiver
@@ -145,11 +147,30 @@ defmodule BEAMNotify do
   end
 
   defp options_to_env(options) do
-    %{"BEAM_NOTIFY" => bin_path(), "BEAM_NOTIFY_OPTIONS" => socket_path(options)}
+    bn_options = options_to_cmdline(options) |> Enum.map(&quote_string/1) |> Enum.join(" ")
+    %{"BEAM_NOTIFY" => bin_path(), "BEAM_NOTIFY_OPTIONS" => bn_options}
+  end
+
+  defp options_to_cmdline(options) do
+    ["-p", socket_path(options)]
+  end
+
+  defp quote_string(s) do
+    if String.contains?(s, " ") do
+      "\"" <> s <> "\""
+    else
+      s
+    end
   end
 
   defp socket_path(options) do
-    name = "beam_notify-" <> to_string(name_from_options(options))
-    Path.join(System.tmp_dir!(), name)
+    case Keyword.get(options, :path) do
+      nil ->
+        name = "beam_notify-" <> to_string(name_from_options(options))
+        Path.join(System.tmp_dir!(), name)
+
+      path ->
+        path
+    end
   end
 end
