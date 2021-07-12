@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.1
+
+This release only cleans up Makefile prints and bumps dependencies. No code
+changes were made.
+
 ## v0.2.0
 
 * New features
