@@ -42,9 +42,11 @@ all: install
 install: $(BUILD) $(PREFIX) $(DEFAULT_TARGETS)
 
 $(BUILD)/%.o: c_src/%.c
+	@echo " CC $(notdir $@)"
 	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -o $@ $<
 
 $(PREFIX)/beam_notify: $(BUILD)/beam_notify.o
+	@echo " LD $(notdir $@)"
 	$(CC) $^ $(ERL_LDFLAGS) $(LDFLAGS) -o $@
 
 $(PREFIX) $(BUILD):
@@ -69,3 +71,5 @@ format:
 	    c_src/*.c
 
 .PHONY: all clean calling_from_make install format
+
+.SILENT:
