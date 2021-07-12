@@ -52,9 +52,11 @@ $(PREFIX)/beam_notify: $(BUILD)/beam_notify.o
 $(PREFIX) $(BUILD):
 	mkdir -p $@
 
-clean:
+mix_clean:
 	$(RM) $(PREFIX)/beam_notify \
 	    $(BUILD)/*.o
+clean:
+	mix clean
 
 format:
 	astyle \
@@ -70,6 +72,6 @@ format:
 	    --pad-oper \
 	    c_src/*.c
 
-.PHONY: all clean calling_from_make install format
+.PHONY: all clean mix_clean calling_from_make install format
 
 .SILENT:
