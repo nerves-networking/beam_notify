@@ -40,7 +40,7 @@ defmodule BEAMNotifyTest do
   test "explicit socket permissions" do
     # Unusual mode
     mode = 0o711
-    pid = start_supervised!({BEAMNotify, path: "test_socket", mode: mode})
+    _ = start_supervised!({BEAMNotify, path: "test_socket", mode: mode})
 
     assert mode == Bitwise.band(File.stat!("test_socket").mode(), 0o777)
   end
