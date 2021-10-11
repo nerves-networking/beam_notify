@@ -24,6 +24,8 @@ defmodule BEAMNotify do
   * `:dispatcher` - a function to call when a notification comes in
   * `:path` - the path to use for the named socket. A path in the system
      temporary directory is the default.
+  * `:mode` - the permissions to apply to the socket. Should be an octal number
+     eg: 0o660 for read/write owner/group, no access to everyone else
   * `:report_env` - set to `true` to report environment variables in addition
      to commandline argument. Defaults to `false`
   * `:recbuf` - receive buffer size. If you're sending a particular large
@@ -33,6 +35,7 @@ defmodule BEAMNotify do
   @type options() :: [
           name: binary() | atom(),
           path: Path.t(),
+          mode: non_neg_integer(),
           dispatcher: dispatcher(),
           report_env: boolean(),
           recbuf: non_neg_integer()
@@ -95,6 +98,7 @@ defmodule BEAMNotify do
     socket_path = socket_path(options)
     dispatcher = Keyword.get(options, :dispatcher, &null_dispatcher/2)
     recbuf = Keyword.get(options, :recbuf, 8192)
+    mode = Keyword.get(options, :mode)
 
     # Blindly try to remove an old file just in case it exists from a previous run
     _ = File.rm(socket_path)
@@ -108,6 +112,8 @@ defmodule BEAMNotify do
         {:ip, {:local, socket_path}},
         {:recbuf, recbuf}
       ])
+
+    if mode, do: File.chmod(socket_path, mode)
 
     state = %{
       socket_path: socket_path,
