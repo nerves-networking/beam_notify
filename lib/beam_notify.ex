@@ -113,7 +113,7 @@ defmodule BEAMNotify do
         {:recbuf, recbuf}
       ])
 
-    if mode, do: File.chmod(socket_path, mode)
+    if mode, do: File.chmod!(socket_path, mode)
 
     state = %{
       socket_path: socket_path,
