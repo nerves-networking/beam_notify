@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2
+
+* New features
+  * Add `:mode` option for setting socket file permissions. Thanks to Ed
+    Wildgoose for this feature.
+
 ## v0.2.1
 
 This release only cleans up Makefile prints and bumps dependencies. No code
