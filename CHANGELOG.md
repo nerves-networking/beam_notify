@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.0
+
+This release has no changes except for the version number.
+
 ## v0.2.2
 
 * New features
