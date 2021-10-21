@@ -41,13 +41,13 @@ defmodule BEAMNotify.MixProject do
   defp package do
     %{
       files: [
+        "CHANGELOG.md",
         "lib",
         "mix.exs",
         "Makefile",
         "README.md",
         "c_src/*.[ch]",
-        "LICENSE",
-        "CHANGELOG.md"
+        "LICENSE"
       ],
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => @source_url}
