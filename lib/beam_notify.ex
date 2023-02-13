@@ -154,7 +154,7 @@ defmodule BEAMNotify do
   end
 
   defp null_dispatcher(args, env) do
-    Logger.warn("beam_notify called with no dispatcher: #{inspect(args)}, #{inspect(env)}")
+    Logger.warning("beam_notify called with no dispatcher: #{inspect(args)}, #{inspect(env)}")
   end
 
   defp options_to_env(options) do
