@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.0
+
+This release fixes warnings when compiled with Elixir 1.15. It removes support
+for Elixir 1.9.
+
 ## v1.0.0
 
 This release has no changes except for the version number.
