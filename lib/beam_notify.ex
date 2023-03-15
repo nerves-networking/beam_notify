@@ -1,10 +1,10 @@
 defmodule BEAMNotify do
-  use GenServer
-  require Logger
-
   @moduledoc """
   Send a message to the BEAM from a shell script
   """
+  use GenServer
+
+  require Logger
 
   @typedoc """
   Callback for dispatching notifications
@@ -158,7 +158,7 @@ defmodule BEAMNotify do
   end
 
   defp options_to_env(options) do
-    bn_options = options_to_cmdline(options) |> Enum.map(&quote_string/1) |> Enum.join(" ")
+    bn_options = options_to_cmdline(options) |> Enum.map_join(" ", &quote_string/1)
     %{"BEAM_NOTIFY" => bin_path(), "BEAM_NOTIFY_OPTIONS" => bn_options}
   end
 
