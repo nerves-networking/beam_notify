@@ -8,7 +8,7 @@ defmodule BEAMNotify.MixProject do
     [
       app: :beam_notify,
       version: @version,
-      elixir: "~> 1.9",
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       compilers: [:elixir_make | Mix.compilers()],
       make_targets: ["all"],
