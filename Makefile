@@ -27,8 +27,8 @@ PREFIX = $(MIX_APP_PATH)/priv
 BUILD  = $(MIX_APP_PATH)/obj
 
 # Set Erlang-specific compile and linker flags
-ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
-ERL_LDFLAGS = -L$(ERL_EI_LIBDIR) -lei_st
+ERL_CFLAGS ?= -I"$(ERL_EI_INCLUDE_DIR)"
+ERL_LDFLAGS = -L"$(ERL_EI_LIBDIR)" -lei_st
 
 CFLAGS ?= -O2 -Wall -Wextra -Wno-unused-parameter -pedantic
 
