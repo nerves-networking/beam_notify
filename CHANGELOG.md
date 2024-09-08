@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.1
+
+* Fixes
+  * Fix compilation on systems with Erlang installed in a directory with spaces
+
 ## v1.1.0
 
 This release fixes warnings when compiled with Elixir 1.15. It removes support
