@@ -43,7 +43,7 @@ defmodule BEAMNotifyTest do
     mode = 0o711
     _ = start_supervised!({BEAMNotify, path: "test_socket", mode: mode})
 
-    assert mode == Bitwise.band(File.stat!("test_socket").mode(), 0o777)
+    assert mode == Bitwise.band(File.stat!("test_socket").mode, 0o777)
   end
 
   test "sending a message via a script", context do
