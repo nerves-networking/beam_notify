@@ -42,15 +42,21 @@ defmodule BEAMNotify.MixProject do
     %{
       files: [
         "CHANGELOG.md",
-        "lib",
-        "mix.exs",
-        "Makefile",
-        "README.md",
         "c_src/*.[ch]",
-        "LICENSE"
+        "lib",
+        "LICENSES/*",
+        "Makefile",
+        "mix.exs",
+        "NOTICE",
+        "README.md",
+        "REUSE.toml"
       ],
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => @source_url}
+      links: %{
+        "GitHub" => @source_url,
+        "REUSE Compliance" =>
+          "https://api.reuse.software/info/github.com/nerves-networking/beam_notify"
+      }
     }
   end
 

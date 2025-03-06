@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2021 Ed Wildgoose
+# SPDX-FileCopyrightText: 2021 Frank Hunleth
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 defmodule BEAMNotify do
   @moduledoc """
   Send a message to the BEAM from a shell script

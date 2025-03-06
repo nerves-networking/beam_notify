@@ -2,7 +2,8 @@
 
 [![Hex version](https://img.shields.io/hexpm/v/beam_notify.svg "Hex version")](https://hex.pm/packages/beam_notify)
 [![API docs](https://img.shields.io/hexpm/v/beam_notify.svg?label=hexdocs "API docs")](https://hexdocs.pm/beam_notify/BEAMNotify.html)
-[![CircleCI](https://circleci.com/gh/nerves-networking/beam_notify.svg?style=svg)](https://circleci.com/gh/nerves-networking/beam_notify)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/nerves-networking/beam_notify/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/nerves-networking/beam_notify/tree/main)
+[![REUSE status](https://api.reuse.software/badge/github.com/nerves-networking/beam_notify)](https://api.reuse.software/info/github.com/nerves-networking/beam_notify)
 
 Send a message to the BEAM from a shell script
 
