@@ -1,7 +1,7 @@
 # BEAMNotify
 
 [![Hex version](https://img.shields.io/hexpm/v/beam_notify.svg "Hex version")](https://hex.pm/packages/beam_notify)
-[![API docs](https://img.shields.io/hexpm/v/beam_notify.svg?label=hexdocs "API docs")](https://hexdocs.pm/beam_notify/BEAMNotify.html)
+[![API docs](https://img.shields.io/hexpm/v/beam_notify.svg?label=hexdocs "API docs")](https://beam-notify.hexdocs.pm/BEAMNotify.html)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nerves-networking/beam_notify/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/nerves-networking/beam_notify/tree/main)
 [![REUSE status](https://api.reuse.software/badge/github.com/nerves-networking/beam_notify)](https://api.reuse.software/info/github.com/nerves-networking/beam_notify)
 
@@ -108,10 +108,10 @@ iex> flush
 
 Here's a code snippet of starting a hypothetical non-Elixir program that needs
 to send messages back to Elixir. This code is part of a [module-based
-supervisor](https://hexdocs.pm/elixir/Supervisor.html#module-module-based-supervisors),
+supervisor](https://elixir.hexdocs.pm/Supervisor.html#module-module-based-supervisors),
 but this isn't necessary. Two GenServers are started: one for `BEAMNotify` and
 one to start and monitor the non-Elixir program using
-[`MuonTrap.Daemon`](https://hexdocs.pm/muontrap/MuonTrap.Daemon.html).
+[`MuonTrap.Daemon`](https://muontrap.hexdocs.pm/MuonTrap.Daemon.html).
 
 Note how `BEAMNotify.env/1` is used to pass the proper environment to the
 program.
