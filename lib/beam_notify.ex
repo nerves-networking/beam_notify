@@ -137,7 +137,7 @@ defmodule BEAMNotify do
 
   @impl GenServer
   def handle_info({:udp, socket, _, 0, data}, %{socket: socket} = state) do
-    {args, env} = :erlang.binary_to_term(data)
+    {args, env} = :erlang.binary_to_term(data, [:safe])
 
     state.dispatcher.(args, env)
 
