@@ -5,7 +5,6 @@
 #
 defmodule BEAMNotifyTest do
   use ExUnit.Case
-  require Bitwise
 
   defp beam_notify_child_spec(context, extra_options \\ []) do
     us = self()
