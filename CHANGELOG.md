@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.1.2
+
+* Fixes
+  * Fix parallel make compilation race
+  * Mark a `:binary_to_term/2` call with `:safe` to avoid worrying about atom
+    exhaustion. Under intended use, it doesn't get any atoms.
+
 ## v1.1.1
 
 * Fixes

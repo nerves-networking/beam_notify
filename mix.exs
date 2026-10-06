@@ -1,7 +1,7 @@
 defmodule BEAMNotify.MixProject do
   use Mix.Project
 
-  @version "1.1.1"
+  @version "1.1.2"
   @source_url "https://github.com/nerves-networking/beam_notify"
 
   def project do
