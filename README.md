@@ -2,6 +2,7 @@
 
 [![Hex version](https://img.shields.io/hexpm/v/beam_notify.svg "Hex version")](https://hex.pm/packages/beam_notify)
 [![API docs](https://img.shields.io/hexpm/v/beam_notify.svg?label=hexdocs "API docs")](https://beam-notify.hexdocs.pm/BEAMNotify.html)
+[![Nerves compatibility](https://compatibility.nerves-project.org/badge/beam_notify.svg)](https://compatibility.nerves-project.org/packages/beam_notify)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nerves-networking/beam_notify/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/nerves-networking/beam_notify/tree/main)
 [![REUSE status](https://api.reuse.software/badge/github.com/nerves-networking/beam_notify)](https://api.reuse.software/info/github.com/nerves-networking/beam_notify)
 
